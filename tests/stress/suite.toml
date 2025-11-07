@@ -1,0 +1,10 @@
+name = "stress-test"
+description = "内存/调度压力，适用于 nightly"
+build_script = "scripts/build_stub.sh"
+arch = "aarch64"
+default_timeout_secs = 900
+
+[[cases]]
+name = "memory-pressure"
+path = "tests/stress/cases/memory_pressure.sh"
+args = ["128"]

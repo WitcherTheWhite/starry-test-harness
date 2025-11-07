@@ -1,0 +1,6 @@
+/target
+/artifacts
+/logs/*
+!/logs/.gitkeep
+/reports/daily/*
+!/reports/daily/.gitkeep

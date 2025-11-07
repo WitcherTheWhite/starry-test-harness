@@ -1,0 +1,10 @@
+name = "daily-test"
+description = "长稳测试: 并发、资源抢占"
+build_script = "scripts/build_stub.sh"
+arch = "aarch64"
+default_timeout_secs = 1800
+
+[[cases]]
+name = "concurrency"
+path = "tests/daily/cases/concurrency.sh"
+args = ["8", "2000"]

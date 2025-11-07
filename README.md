@@ -72,7 +72,7 @@ make build                # 仅编译 Rust harness
    - `allow_failure`：true 则算 soft fail，不阻塞主流程。
 4. **验证**：`make <tier> run`，检查 `logs/<tier>/` 下日志与 JSON。
 
-## 下一步建议
+## 下一步正在看
 
 1. **替换 build_stub**：对接真实的 Starry OS 编译、打包和 QEMU/实机启动逻辑。
 2. **引入超时/并发调度**：在 Rust harness 中监听 case 运行时间，必要时强制 kill。

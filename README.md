@@ -9,7 +9,7 @@ Rust 原型仓库，用于为 Kylin-X / Starry OS 构建分层自动化测试体
 - **分层目录**：`tests/ci|stress|daily|manual` 保存 manifest（`suite.toml`）和脚本，开发/测试可直接追加用例。
 - **日志可追踪**：所有执行输出落在 `logs/<suite>/`，失败时还会写入 `error.log` 方便 CI 收集。
 - **StarryOS 集成**：`ci-test` 复用了 upstream `scripts/ci-test.py` 的启动流程，可切换到真实构建/QEMU 启动。
-- **AArch64 关注**：默认面向 AArch64，后续可扩展到多架构。
+- **AArch64 关注**：默认面向 AArch64，后续再考虑别的架构。
 
 ## 仓库结构
 
@@ -86,7 +86,7 @@ make build                # 仅编译 Rust harness
 
 - `.github/workflows/ci-test.yml` 参考 StarryOS 的 workflow：包含并发保护、Rust 缓存与可选的 StarryOS checkout。
 - 通过仓库/环境变量 `ENABLE_STARRYOS_BUILD`、`ENABLE_STARRYOS_BOOT` 控制是否真正编译 + 启动 StarryOS。
-- 默认值为 0，仅运行 harness + 本地脚本；待算力准备好后再开启真实流水线。
+- 默认值为 0，仅运行 harness + 本地脚本；下一步再写真的
 
 ## 下一步正在看
 

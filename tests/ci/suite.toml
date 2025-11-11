@@ -5,7 +5,13 @@ arch = "aarch64"
 default_timeout_secs = 300
 
 [[cases]]
-name = "rust-host-suite"
-description = "构建并执行 tests/ci 下的全部 Rust 测试用例"
-path = "tests/ci/run_rust_cases.sh"
+name = "starry-boot"
+description = "通过 QEMU 启动 StarryOS 并验证 BusyBox Shell"
+path = "tests/ci/run_starry_boot.sh"
+args = []
+
+[[cases]]
+name = "file-io-basic"
+description = "Rust 文件基础读写冒烟"
+path = "tests/ci/run_file_io_basic.sh"
 args = []

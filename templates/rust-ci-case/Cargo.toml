@@ -1,8 +1,0 @@
-[package]
-name = "{{project-name}}"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-test-utils = { path = "../test-utils" }
-anyhow = "1.0"

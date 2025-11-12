@@ -49,10 +49,11 @@ STARRYOS_COMMIT=$(git -C "${STARRYOS_ROOT}" rev-parse HEAD)
 log "StarryOS commit: ${STARRYOS_COMMIT}"
 
 # Patch: Remove doc_auto_cfg feature (removed in Rust 1.92.0)
-if grep -q "feature(doc_auto_cfg)" "${STARRYOS_ROOT}/arceos/modules/axhal/src/lib.rs" 2>/dev/null; then
-  log "Patching axhal to remove doc_auto_cfg feature"
-  sed -i '/^#!\[feature(doc_auto_cfg)\]/d' "${STARRYOS_ROOT}/arceos/modules/axhal/src/lib.rs"
-fi
+log "Patching StarryOS to remove doc_auto_cfg feature"
+find "${STARRYOS_ROOT}" -name "*.rs" -type f -exec grep -l "feature(doc_auto_cfg)" {} \; | while read -r file; do
+  log "  Patching $(realpath --relative-to="${STARRYOS_ROOT}" "$file")"
+  sed -i '/^#!\[feature(doc_auto_cfg)\]/d' "$file"
+done
 
 HOST_TRIPLE="$(rustc -Vv 2>/dev/null | awk '/^host:/ {print $2}')"
 if [[ -z "${HOST_TRIPLE}" ]]; then

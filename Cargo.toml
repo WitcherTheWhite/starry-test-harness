@@ -13,3 +13,7 @@ serde_json = "1.0"
 toml = "0.8"
 
 [workspace]
+members = [
+    "tests/ci/cases",
+    "tests/ci/test-utils",
+]

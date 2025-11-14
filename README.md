@@ -152,7 +152,7 @@ timeout_secs = 1200  # 单独为这个用例设置 20 分钟超时
 
 `.github/workflows/ci-test.yml` 已经配置好所有依赖的安装和缓存，并会自动执行 `make ci-test run`。
 
-- `STARRYOS_REMOTE`: StarryOS 仓库地址。
+- `STARRYOS_REMOTE`: StarryOS 仓库地址（默认：https://github.com/kylin-x-kernel/StarryOS.git）。
 - `STARRYOS_REF`: StarryOS 分支/标签。
 - `STARRYOS_ROOT`: StarryOS 本地克隆路径。
 

@@ -7,7 +7,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SUITE=${1:-ci-test}
 ARCH=${ARCH:-aarch64}
 
-STARRYOS_REMOTE="${STARRYOS_REMOTE:-https://github.com/Starry-OS/StarryOS.git}"
+STARRYOS_REMOTE="${STARRYOS_REMOTE:-https://github.com/kylin-x-kernel/StarryOS.git}"
 STARRYOS_COMMIT="${STARRYOS_REF:-${STARRYOS_COMMIT:-main}}"
 STARRYOS_ROOT=${STARRYOS_ROOT:-${REPO_ROOT}/.cache/StarryOS}
 STARRYOS_DEPTH=${STARRYOS_DEPTH:-0}
@@ -67,7 +67,7 @@ ROOTFS_CACHE_DIR="${ROOTFS_CACHE_DIR:-${REPO_ROOT}/.cache/rootfs}"
 mkdir -p "${ROOTFS_CACHE_DIR}"
 log "Ensuring rootfs template is available in ${ROOTFS_CACHE_DIR}"
 IMG_VERSION="${ROOTFS_VERSION:-20250917}"
-IMG_URL="https://github.com/Starry-OS/rootfs/releases/download/${IMG_VERSION}"
+IMG_URL="https://github.com/kylin-x-kernel/rootfs/releases/download/${IMG_VERSION}"
 IMG="rootfs-${ARCH}.img"
 IMG_PATH="${ROOTFS_CACHE_DIR}/${IMG}"
 if [[ ! -f "${IMG_PATH}" ]]; then

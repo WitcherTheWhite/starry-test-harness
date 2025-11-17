@@ -310,10 +310,20 @@ fn run_suite(suite: Suite, workspace: &Path) -> Result<()> {
                     format!("(completed in {:.2}s)", duration_sec).dimmed()
                 );
                 for (idx, line) in failed_lines.iter().enumerate() {
+                    let indent = if idx == 0 { "  " } else { "    " };
+                    let formatted = format!("{}{}", indent, line);
                     if idx + 1 == failed_lines.len() {
-                        println!("{} {}", box_color("└─".into()), line.bright_red());
+                        println!(
+                            "{} {}",
+                            box_color("└─".into()),
+                            formatted.bright_red()
+                        );
                     } else {
-                        println!("{} {}", box_color("│ ".into()), line.bright_red());
+                        println!(
+                            "{} {}",
+                            box_color("│ ".into()),
+                            formatted.bright_red()
+                        );
                     }
                 }
             }
@@ -321,7 +331,7 @@ fn run_suite(suite: Suite, workspace: &Path) -> Result<()> {
             // Non-TTY (like GitHub Actions): just print the result line
             println!("{} {}", status_colored, format!("(completed in {:.2}s)", duration_sec).dimmed());
             for line in &failed_lines {
-                println!("    {}", line.bright_red());
+                println!("{}", line.bright_red());
             }
         }
 
@@ -636,14 +646,14 @@ fn format_failed_subtest_lines(details: &[FailedSubCaseDetail]) -> Vec<String> {
         return Vec::new();
     }
     let mut lines = Vec::new();
-    lines.push(format!(" Failed tests ({}):", details.len()));
+    lines.push(format!("Failed tests ({}):", details.len()));
     for detail in details {
         let suffix = if detail.summary.is_empty() {
             String::new()
         } else {
             format!(": {}", detail.summary)
         };
-        lines.push(format!("   - {}{}", detail.name, suffix));
+        lines.push(format!("- {}{}", detail.name, suffix));
     }
     lines
 }

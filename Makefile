@@ -1,6 +1,6 @@
 CARGO ?= cargo
 RUNNER := $(CARGO) run --quiet --bin starry-test-harness --
-SUPPORTED_SUITES := ci-test stress-test daily-test
+SUPPORTED_SUITES := ci-test ci-test-iter stress-test daily-test
 
 SUITE := $(firstword $(MAKECMDGOALS))
 ACTION := $(word 2,$(MAKECMDGOALS))
@@ -24,6 +24,7 @@ build:
 help:
 	@echo "Available targets:"
 	@echo "  make ci-test run        # build + run CI smoke tests"
+	@echo "  make ci-test-iter run   # dev iteration tests (per-case harness)"
 	@echo "  make stress-test run    # build + run stress tests"
 	@echo "  make daily-test run     # run long stability tests"
 	@echo "  make build              # compile the Rust harness"

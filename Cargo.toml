@@ -17,10 +17,9 @@ regex = "1.10"
 [workspace]
 members = [
     "tests/ci/cases",
+    "tests/ci-test-iter/cases",
     "tests/ci/test-utils",
 ]
 exclude = [
     "tests/stress/cases",
-    "tests/stress/cases/cpu_saturator",
-    "tests/stress/cases/ptrace_tests",
 ]

@@ -1,6 +1,6 @@
 # Starry Test Harness
 
-基于 Rust 构建的原型仓库，用于为 Starry OS 构建分层自动化测试体系。目标是给研发、测试人员提供一个统一入口，可以在 PR、nightly、灰度阶段按层次执行不同类型的用例（ci/stress/daily），并输出可追踪的日志与报告。
+基于 Rust 构建的原型仓库，用于为 Starry OS 构建分层自动化测试体系。目标是给研发、测试人员提供一个统一入口，可以在 PR和本地按用途执行不同类型的用例（ci/ci-test-iter/stress/daily），并输出可追踪的日志与报告。ci文件夹中为目前主仓starryos正在用的ci流程，而文件夹ci-test-iter专为目前迭代开发功能所用，即开发功能尚未并入主线，若需该测试并入主线ci测试，则加入ci文件夹，二者基本结构框架一致，使用方法见下面。
 
 ## 仓库结构
 
@@ -18,6 +18,11 @@
 │   │   ├── run_starry_boot.sh # CI 用例: 启动验证脚本
 │   │   ├── run_case.sh      # CI 用例: Rust 测试用例运行器
 │   │   └── cases/           # CI 用例: 所有 Rust 测试源码 (一个 Crate)
+│   ├── ci-test-iter/
+│   │   ├── suite.toml         # 迭代套件: 用例清单
+│   │   ├── run_starry_boot.sh # 用例: 启动验证脚本
+│   │   ├── run_case.sh        # 迭代用例运行器
+│   │   └── cases/             # 迭代用例源码/脚本
 │   ├── stress/
 │   │   ├── suite.toml       # Stress 套件: 用例清单
 │   │   ├── run_case.sh      # Stress 用例: 统一运行器脚本
@@ -32,7 +37,7 @@
 
 ## 运行流程 / 快速开始
 
-当执行 `make <suite-name> run` (例如 `make stress-test run`) 时，框架会自动执行以下步骤：
+当执行 `make <suite-name> run` (例如 `make stress-test run`) 或 `CASES=<name> make ci-test-iter run`（例如`CASES=process-spawn make ci-test-iter run`）时，框架会自动执行以下步骤：
 
 1.  **Harness 启动**: `Makefile` 调用 Rust 编写的 `starry-test-harness` 程序。
 2.  **环境与内核构建**: Harness 首先执行 `scripts/build_starry.sh`，该脚本负责：
@@ -40,9 +45,9 @@
     *   克隆或更新 StarryOS 仓库代码。
     *   编译 StarryOS 内核 (`.bin` 文件)。
     *   下载 `rootfs` 模板镜像 (如果本地没有)。
-3.  **用例迭代执行**: Harness 解析对应 `tests/<suite-name>/suite.toml` 文件，并依次执行其中定义的每个测试用例。
+3.  **用例迭代执行**: Harness 解析对应 `tests/<suite-name>/suite.toml` 文件，并依次执行其中定义的每个测试用例，如果指定CASES则执行该CASES。
 4.  **动态镜像生成与测试**:
-    *   **CI 套件**: `run_case.sh` 会交叉编译 Rust 测试二进制，复制一个全新的临时磁盘镜像，使用 `debugfs` 注入测试二进制，然后启动 QEMU 在虚拟机内执行。Rust 测试框架的退出码直接决定 PASS/FAIL。
+    *   **CI 套件与CI 迭代套件**: `run_case.sh` 会交叉编译 Rust 测试二进制，复制一个全新的临时磁盘镜像，使用 `debugfs` 注入测试二进制，然后启动 QEMU 在虚拟机内执行。Rust 测试框架的退出码直接决定 PASS/FAIL。
     *   **Stress/Daily 套件**: 类似流程，但测试程序必须在标准输出打印包含 `status: "pass"` 或 `status: "fail"` 的 JSON 对象，框架会捕获并解析该 JSON 来判断成功或失败。
 5.  **结果汇总与日志**:
     *   所有用例执行完毕后，框架会生成汇总报告和详细日志，存放在 `logs/<suite-name>/<timestamp>/` 目录中。
@@ -50,19 +55,15 @@
 这个流程确保了每次测试都在一个**干净、隔离**的环境中进行，避免了用例间的相互干扰。
 
 
-### Stress 套件快速参考
--目前先把一些边迭代边开发的测试放到stress里，以便CI test稳定为主线测试服务，一般每个测试都是一个cargo工程，里面自己添加需要的文件等，自己写测试逻辑。可以参考目录下别人的文件，需要遵守下面添加stress测试用例的规则。
-- 路径：`tests/stress/`
-  - 运行器：`tests/stress/run_case.sh`。负责编译单个用例、复制 rootfs 模板、用 debugfs 写入 `/usr/tests/<case_id>`，启动 QEMU 并解析 JSON 输出。
-  - 套件清单：`tests/stress/suite.toml`。
-  - 用例目录：`tests/stress/cases/<case_id>/`，每个都是独立 Cargo 工程。
-- 单独运行某个用例：
-  - 推荐：`CASES=<suite.toml里的name> make stress-test run`（例如 `CASES=sqlite-fixture`）。
-  - 直接脚本：`tests/stress/run_case.sh <case_id> [args...]`（默认无 CASES 过滤，确保 rootfs 模板存在）。
+### CI 迭代套件（tests/ci-test-iter）适用于目前不能通过的测试套件，放到这里，即还没有合并到starryos主线的功能
+- 用途：开发阶段 / 功能冒烟验证，任何“边迭代边验证”的 case 都放在这里。目前先把一些边迭代边开发的测试放到ci-test-iter里，以便CI test即文件夹tests/ci稳定为主线测试服务，里面自己添加需要的文件等，自己写测试逻辑。可以参考目录下别人的文件，需要遵守下面添加测试用例的规则。
+- 运行方式：`make ci-test-iter run` 或 `CASES=<name> make ci-test-iter run`。
+- 结构：`tests/ci-test-iter/`
+  - 运行器：`tests/ci-test-iter/run_case.sh`。
+  - 套件清单：`tests/ci-test-iter/suite.toml`。
+  - 当前用例：`ptrace-smoke`、`sqlite-fixture`（都在 `tests/ci-test-iter/cases/` 下）。
 - 输出与日志：
-  - suite 日志目录：`logs/stress/<timestamp>/`
-  - 用例日志：`logs/stress/<timestamp>/cases/<case>.log`
-  - 结果 JSON：`logs/stress/<timestamp>/artifacts/<case>/result.json`
+  - suite 日志目录：`logs/ci-test-iter/<timestamp>/`
 
 ## 如何添加测试用例
 
@@ -108,9 +109,9 @@
     *   `path`: 固定指向 `tests/<suite>/run_case.sh`。
     *   `args`: 数组的第一个元素必须是你的 `<case_id>` (Cargo 包名)，后续元素会作为命令行参数传递给你的程序。
 
-### 添加 CI 测试用例
+### 添加 CI 测试用例与CI 迭代测试用例
 
-`ci` 套件的所有用例共享同一个 `Cargo` 工程 (`tests/ci/cases/`)，适合小型的、可以快速编译的单元测试或冒烟测试。
+套件的所有用例共享同一个 `Cargo` 工程 (`tests/ci/cases/`)，适合小型的、可以快速编译的单元测试或冒烟测试。下面以ci文件夹中为例：
 
 1.  **生成骨架 (推荐)**:
     执行 `templates/add_ci_case.sh` 脚本可以快速生成一个测试用例模板。

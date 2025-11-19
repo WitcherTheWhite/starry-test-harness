@@ -126,6 +126,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "ci-test-iter-cases"
+version = "0.1.0"
+dependencies = [
+ "test-utils",
+]
+
+[[package]]
 name = "clap"
 version = "4.5.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"

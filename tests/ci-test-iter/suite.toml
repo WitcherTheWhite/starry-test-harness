@@ -1,0 +1,17 @@
+name = "ci-test-iter"
+description = "Rust 用例聚合执行，迭代开发专用"
+build_script = "scripts/build_starry.sh"
+arch = "aarch64"
+default_timeout_secs = 300
+
+[[cases]]
+name = "starry-boot"
+description = "通过 QEMU 启动 StarryOS 并验证 BusyBox Shell"
+path = "tests/ci-test-iter/run_starry_boot.sh"
+args = []
+
+[[cases]]
+name = "process-spawn"
+description = "通过子进程输出验证进程管理基本能力"
+path = "tests/ci-test-iter/run_case.sh"
+args = ["process_spawn"]

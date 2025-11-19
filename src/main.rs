@@ -44,6 +44,8 @@ struct Cli {
 enum Suite {
     #[value(name = "ci-test")]
     CiTest,
+    #[value(name = "ci-test-iter")]
+    CiTestIter,
     #[value(name = "stress-test")]
     StressTest,
     #[value(name = "daily-test")]
@@ -54,6 +56,7 @@ impl Suite {
     fn dir_name(&self) -> &'static str {
         match self {
             Suite::CiTest => "ci",
+            Suite::CiTestIter => "ci-test-iter",
             Suite::StressTest => "stress",
             Suite::DailyTest => "daily",
         }
@@ -62,6 +65,7 @@ impl Suite {
     fn display_name(&self) -> &'static str {
         match self {
             Suite::CiTest => "CI Test",
+            Suite::CiTestIter => "CI Iteration Test",
             Suite::StressTest => "Stress Test",
             Suite::DailyTest => "Daily Test",
         }
